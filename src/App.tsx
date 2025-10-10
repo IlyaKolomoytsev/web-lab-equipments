@@ -1,26 +1,34 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';  // Измените на Routes
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import HomePage from './HomePage';
+import AboutPage from './AboutPage';
+
+const App: React.FC = () => {
+    return (
+        <Router>
+            <div>
+                {/* Навигация */}
+                <nav>
+                    <ul>
+                        <li>
+                            <Link to="/">Home</Link>
+                        </li>
+                        <li>
+                            <Link to="/about">About</Link>
+                        </li>
+                    </ul>
+                </nav>
+
+                {/* Маршруты */}
+                <Routes>  {/* Заменили Switch на Routes */}
+                    <Route path="/" element={<HomePage />} />  {/* Заменили component на element */}
+                    <Route path="/about" element={<AboutPage />} />  {/* Заменили component на element */}
+                </Routes>
+            </div>
+        </Router>
+    );
 }
 
 export default App;
