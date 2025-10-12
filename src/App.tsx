@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';  // Измените на Routes
-import './App.css';
+import './styles/App.css';
 
-import HomePage from './HomePage';
-import AboutPage from './AboutPage';
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
 
 const App: React.FC = () => {
     return (
