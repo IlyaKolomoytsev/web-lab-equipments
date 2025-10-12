@@ -1,0 +1,10 @@
+.toggle-button {
+    width: 2rem;
+    height: 2rem;
+    background-color: transparent;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    position: relative;
+    margin: 1rem;
+}

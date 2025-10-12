@@ -5,14 +5,15 @@ import './styles/App.css';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import {ThemeProvider} from "./utils/ThemeContext";
-import PageThemeToggle from "./components/PageThemeToggle";
+import PageThemeToggle from "./components/PageThemeToggle/PageThemeToggle";
+import Header from "./components/Header/Header";
 
 const App: React.FC = () => {
     return (
         <Router>
             <ThemeProvider>
                 <div>
-                    <PageThemeToggle/>
+                    <Header title={"лох"}></Header>
                     <nav>
                         <ul>
                             <li>

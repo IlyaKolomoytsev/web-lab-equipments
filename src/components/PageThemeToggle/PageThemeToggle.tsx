@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import {useTheme} from "../utils/ThemeContext";
+import {useTheme} from "../../utils/ThemeContext";
+import styles from "./PageThemeToggle.module.css";
 
 export const PageThemeToggle: React.FC = () => {
     const { theme, setTheme, toggle } = useTheme();
@@ -38,15 +39,13 @@ export const PageThemeToggle: React.FC = () => {
     );
 
     return (
-        <div className="theme-toggle">
-            <button
-                type="button"
-                className="theme-toggle__button"
-                onClick={toggle}
-            >
-                {theme === "light" ? <MoonIcon /> : <SunIcon />}
-            </button>
-        </div>
+        <button
+            type="button"
+            className={styles['toggle-button']}
+            onClick={toggle}
+        >
+            {theme === "light" ? <MoonIcon /> : <SunIcon />}
+        </button>
     );
 };
 
