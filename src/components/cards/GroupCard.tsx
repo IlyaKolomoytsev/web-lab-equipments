@@ -2,7 +2,7 @@ import styles from "./Card.module.css"
 import Button from "../Buttons/Button.tsx";
 import {EditIcon, RemoveIcon} from "../Icons/Icons.tsx";
 
-interface CardProps {
+export interface GroupCardProps {
     title: string;
     description: string;
     mainAction?: () => void;
@@ -10,7 +10,7 @@ interface CardProps {
     removeAction?: () => void;
 }
 
-const GroupCard: React.FC<CardProps> = (props) => {
+const GroupCard: React.FC<GroupCardProps> = (props) => {
     return (
         <div className={styles.card}>
             <div className={styles.card_header} onClick={props.mainAction}>
