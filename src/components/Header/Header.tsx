@@ -1,4 +1,3 @@
-import React, {useState} from 'react'
 import styles from './Header.module.css'
 import PageThemeToggle from "../PageThemeToggle/PageThemeToggle";
 
