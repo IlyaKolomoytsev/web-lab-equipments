@@ -1,7 +1,7 @@
 import styles from "./Card.module.css"
 import Button from "../Buttons/Button.tsx";
 import {useState} from "react";
-import {EditIcon, RemoveIcon, RentedIcon, StockItem} from "../Icons/Icons.tsx";
+import {EditIcon, RemoveIcon, RentedIcon, StockIcon} from "../Icons/Icons.tsx";
 
 interface CardProps {
     title: string;
@@ -22,7 +22,7 @@ const GroupCard: React.FC<CardProps> = (props) => {
         if (rented) {
             return [RentedIcon(), "Rented"];
         } else {
-            return [StockItem(), "In stock"];
+            return [StockIcon(), "In stock"];
         }
     }
 
