@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {useTheme} from "../../utils/ThemeContext";
 import styles from "./PageThemeToggle.module.css";
 
