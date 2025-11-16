@@ -2,7 +2,18 @@ import {useEffect, useState} from "react";
 import {loadEquipments, saveEquipments} from "../storage/equipmentsStorage";
 import type {Equipment, EquipmentGroup} from "../types/equipments.ts";
 
-export function useEquipments() {
+export interface EquipmentsStore {
+    groups: EquipmentGroup[],
+    setGroups: React.Dispatch<React.SetStateAction<EquipmentGroup[]>>,
+    addGroup: (title: string, description: string) => void,
+    removeGroup: (groupId: number) => void,
+    addEquipment: (groupId: number, title: string, description: string) => void,
+    toggleRented: (groupId: number, equipmentId: number) => void,
+    removeEquipment: (groupId: number, equipmentId: number) => void,
+    clearAll: () => void
+}
+
+export function useEquipments():EquipmentsStore {
     const [groups, setGroups] = useState<EquipmentGroup[]>(() => loadEquipments());
 
     // синхронизируем state → localStorage
@@ -103,7 +114,7 @@ export function useEquipments() {
                         return eq;
                     }
 
-                    return { ...eq, rented: !eq.rented };
+                    return {...eq, rented: !eq.rented};
                 });
 
                 return {
@@ -115,14 +126,13 @@ export function useEquipments() {
     };
 
 
-
     const clearAll = () => {
         setGroups([]);
     };
 
     return {
         groups,
-        setGroups, // на всякий случай, если потребуется
+        setGroups,
         addGroup,
         removeGroup,
         addEquipment,
