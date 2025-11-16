@@ -5,16 +5,20 @@ import './styles/App.css';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import {ThemeProvider} from "./utils/ThemeContext";
+import {useEquipments} from "./hooks/useEquipments.ts";
 
 const App: React.FC = () => {
+    const equipments = useEquipments(); // 👈 один источник правды
+
     return (
         <div className="container">
-            <Router >
+            <Router>
                 <ThemeProvider>
                     <div>
                         {/* Маршруты */}
                         <Routes>  {/* Заменили Switch на Routes */}
-                            <Route path="/" element={<HomePage/>}/> {/* Заменили component на element */}
+                            <Route path="/"
+                                   element={<HomePage equipments={equipments}/>}/> {/* Заменили component на element */}
                             <Route path="/about" element={<AboutPage/>}/> {/* Заменили component на element */}
                         </Routes>
                     </div>

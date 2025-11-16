@@ -3,9 +3,15 @@ import Header from "../components/Header/Header.tsx";
 import Button from "../components/Buttons/Button.tsx";
 import {HideIcon, RemoveIcon, ShowIcon} from "../components/Icons/Icons.tsx";
 import GroupCard, {type GroupCardProps} from "../components/cards/GroupCard.tsx";
+import type {useEquipments} from "../hooks/useEquipments.ts";
 
+type EquipmentsStore = ReturnType<typeof useEquipments>;
 
-const HomePage: React.FC = () => {
+interface HomePageProps {
+    equipments: EquipmentsStore;
+}
+
+const HomePage: React.FC<HomePageProps> = () => {
 
     const [formVisibility, setFormVisibility] = useState(false);
 
