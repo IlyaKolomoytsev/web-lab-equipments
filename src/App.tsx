@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import {ThemeProvider} from "./utils/ThemeContext";
 import {EquipmentsProvider} from "./utils/EquipmentContext.tsx";
+import EditEquipmentGroup from "./pages/EditEquipmentGroup.tsx";
 
 const App: React.FC = () => {
     return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
                         {/* Маршруты */}
                         <Routes>  {/* Заменили Switch на Routes */}
                             <Route path="/" element={<HomePage/>}/> {/* Заменили component на element */}
+                            <Route path="/equipment-group/:id/edit" element={<EditEquipmentGroup/>}/>
                             <Route path="/about" element={<AboutPage/>}/> {/* Заменили component на element */}
                         </Routes>
                     </EquipmentsProvider>
