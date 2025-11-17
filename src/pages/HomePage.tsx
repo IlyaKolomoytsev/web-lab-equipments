@@ -5,9 +5,12 @@ import {AddIcon, HideIcon, RemoveIcon, ShowIcon} from "../components/Icons/Icons
 import GroupCard from "../components/cards/GroupCard.tsx";
 import InputField from "../components/Forms/InputField.tsx";
 import {useEquipmentsStore} from "../utils/EquipmentContext.tsx";
+import {useNavigate} from "react-router-dom";
 
 const HomePage: React.FC = () => {
     const equipments = useEquipmentsStore();
+    const navigate = useNavigate();
+
     const [formVisibility, setFormVisibility] = useState(false);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -15,6 +18,12 @@ const HomePage: React.FC = () => {
     const removeAll = () => {
         if (confirm("Are you sure?")) {
             equipments.clearAll();
+        }
+    }
+
+    const removeGroupId = (id: number) => {
+        if (confirm("Are you sure?")) {
+            equipments.removeGroup(id);
         }
     }
 
@@ -85,8 +94,13 @@ const HomePage: React.FC = () => {
             </Button>
         </form>
         <div className="list">
-            {equipments.groups.map(item => (
-                <GroupCard {...item} />
+            {equipments.groups.map(group => (
+                <GroupCard
+                    title={group.title}
+                    description={group.description}
+                    editAction={() => navigate(`/equipment-group/${group.id}/edit`)}
+                    removeAction={() => {removeGroupId(group.id)}}
+                />
             ))}
         </div>
     </div>
