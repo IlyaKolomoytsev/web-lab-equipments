@@ -1,0 +1,49 @@
+.form-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-bottom: 1rem;
+}
+
+.input {
+    outline: none;
+    border: 2px solid #ccc;
+    border-radius: 0.2rem;
+    padding: 0.3rem;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.input:focus {
+    border-color: #333;
+}
+
+.input_error input {
+    border: 2px solid red;
+}
+
+.input_error::after {
+    content: "Please enter a valid value";
+    color: var(--danger-color);
+    font-size: 0.8rem;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+}
+
+.edit-form {
+    background-color: var(--bg-color);
+    /* padding: 1rem; */
+    transition: box-shadow 0.3s ease 0s;
+    width: 100%;
+    max-width: 600px;
+}
+
+.edit-form__form-label {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
