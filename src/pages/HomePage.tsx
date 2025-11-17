@@ -1,30 +1,36 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Header from "../components/Header/Header.tsx";
 import Button from "../components/Buttons/Button.tsx";
-import {HideIcon, RemoveIcon, ShowIcon} from "../components/Icons/Icons.tsx";
-import GroupCard, {type GroupCardProps} from "../components/cards/GroupCard.tsx";
-import type {useEquipments} from "../hooks/useEquipments.ts";
+import {AddIcon, HideIcon, RemoveIcon, ShowIcon} from "../components/Icons/Icons.tsx";
+import GroupCard from "../components/cards/GroupCard.tsx";
+import InputField from "../components/Forms/InputField.tsx";
+import {useEquipmentsStore} from "../utils/EquipmentContext.tsx";
 
-type EquipmentsStore = ReturnType<typeof useEquipments>;
-
-interface HomePageProps {
-    equipments: EquipmentsStore;
-}
-
-const HomePage: React.FC<HomePageProps> = () => {
-
+const HomePage: React.FC = () => {
+    const equipments = useEquipmentsStore();
     const [formVisibility, setFormVisibility] = useState(false);
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
 
-    const data: GroupCardProps[] = [
-        {
-            title: "Микрофоны",
-            description: "оборудование",
-        },
-        {
-            title: "Колонки",
-            description: "палёные",
+    const removeAll = () => {
+        if (confirm("Are you sure?")) {
+            equipments.clearAll();
         }
-    ];
+    }
+
+    const formRef = useRef<HTMLFormElement>(null);
+
+    useEffect(() => {
+        if (!formRef.current) return;
+        let height;
+        if (!formVisibility) {
+            height = "0px";
+        } else {
+            const contentHeight = formRef.current.scrollHeight;
+            height = `${contentHeight}px`
+        }
+        formRef.current.style.height = height;
+    }, [formVisibility]);
 
     const formVisibilityButton = (isOpen: boolean) => {
         if (isOpen) {
@@ -41,18 +47,45 @@ const HomePage: React.FC<HomePageProps> = () => {
     return <div>
         <Header title={"Groups of equipments"}></Header>
         <div className="toolbar">
-            <Button variant="danger">
+            <Button variant="danger" onClick={removeAll}>
                 {RemoveIcon()} RemoveAll
             </Button>
             <Button variant="secondary" onClick={changeFormVisibility}>
                 {formVisibilityButton(formVisibility)}
             </Button>
         </div>
-        <div className="create-form">
-
-        </div>
+        <form
+            ref={formRef}
+            className="create-form"
+            onSubmit={(e: React.FormEvent) => {
+                e.preventDefault();
+            }}>
+            <InputField
+                label="Edit equipment title"
+                placeholder="Edit equipment title"
+                content={title}
+                setContent={setTitle}
+            ></InputField>
+            <InputField
+                label="Edit description"
+                placeholder="Edit description"
+                content={description}
+                setContent={setDescription}
+            ></InputField>
+            <Button
+                variant="primary"
+                onClick={() => {
+                    if (title === "") return;
+                    equipments.addGroup(title, description)
+                    setTitle("");
+                    setDescription("")
+                }}
+            >
+                {AddIcon()} Add
+            </Button>
+        </form>
         <div className="list">
-            {data.map(item => (
+            {equipments.groups.map(item => (
                 <GroupCard {...item} />
             ))}
         </div>
