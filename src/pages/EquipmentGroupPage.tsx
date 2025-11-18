@@ -103,8 +103,10 @@ const EquipmentGroupPage: React.FC = () => {
                 <ElementCard
                     title={element.title}
                     description={element.description}
-                    toggleStatus={() => {equipments.toggleRented(foundEntry.id, element.id)}}
-                    editAction={() => navigate(`/equipment-group/${element.id}/edit`)}
+                    toggleStatus={() => {
+                        equipments.toggleRented(foundEntry.id, element.id)
+                    }}
+                    editAction={() => navigate(`/equipment/${element.groupId}/${element.id}/edit`)}
                     rented={element.rented}
                 />
             ))}
