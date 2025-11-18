@@ -7,7 +7,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import Header from "../components/Header/Header.tsx";
 import type {EquipmentGroup} from "../types/equipments.ts";
 
-const EditEquipmentGroup: React.FC = () => {
+const EditEquipmentGroupPage: React.FC = () => {
     const equipment = useEquipmentsStore()
     const navigate = useNavigate();
     const {id} = useParams<{ id: string }>();
@@ -71,4 +71,4 @@ const EditEquipmentGroup: React.FC = () => {
         </div>)
 }
 
-export default EditEquipmentGroup;
+export default EditEquipmentGroupPage;

@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import {ThemeProvider} from "./utils/ThemeContext";
 import {EquipmentsProvider} from "./utils/EquipmentContext.tsx";
-import EditEquipmentGroup from "./pages/EditEquipmentGroup.tsx";
+import EditEquipmentGroupPage from "./pages/EditEquipmentGroupPage.tsx";
 import EquipmentGroupPage from "./pages/EquipmentGroupPage.tsx";
 
 const App: React.FC = () => {
@@ -19,7 +19,7 @@ const App: React.FC = () => {
                         <Routes>  {/* Заменили Switch на Routes */}
                             <Route path="/" element={<HomePage/>}/> {/* Заменили component на element */}
                             <Route path="/equipment/:id" element={<EquipmentGroupPage/>}/>
-                            <Route path="/equipment-group/:id/edit" element={<EditEquipmentGroup/>}/>
+                            <Route path="/equipment-group/:id/edit" element={<EditEquipmentGroupPage/>}/>
                             <Route path="/about" element={<AboutPage/>}/> {/* Заменили component на element */}
                         </Routes>
                     </EquipmentsProvider>
