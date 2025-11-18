@@ -22,6 +22,7 @@ const EquipmentGroupPage: React.FC = () => {
     const [formVisibility, setFormVisibility] = useState(false);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [filter, setFilter] = useState<boolean | undefined>(undefined);
     const formRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
@@ -98,21 +99,50 @@ const EquipmentGroupPage: React.FC = () => {
                 {AddIcon()} Add
             </Button>
         </form>
+        <div className="equipment-filter">
+            <span>Filter by status</span>
+            <select
+                className="input"
+                onChange={(e) => {
+                    switch (e.target.value) {
+                        case "All":
+                            setFilter(undefined);
+                            break;
+                        case "Rented":
+                            setFilter(true);
+                            break;
+                        case "In stock":
+                            setFilter(false);
+                            break;
+                    }
+                }}
+            >
+                <option>All</option>
+                <option>Rented</option>
+                <option>In stock</option>
+            </select>
+        </div>
         <div className="list">
-            {foundEntry.equipments.map(element => (
-                <ElementCard
-                    title={element.title}
-                    description={element.description}
-                    toggleStatus={() => {
-                        equipments.toggleRented(foundEntry.id, element.id)
-                    }}
-                    editAction={() => navigate(`/equipment/${element.groupId}/${element.id}/edit`)}
-                    removeAction={() => {
-                        equipments.removeEquipment(element.groupId, element.id)
-                    }}
-                    rented={element.rented}
-                />
-            ))}
+            {foundEntry.equipments.map(element => {
+                console.log(filter);
+                if (filter !== undefined && filter !== element.rented) {
+                    return null;
+                }
+                return (
+                    <ElementCard
+                        title={element.title}
+                        description={element.description}
+                        toggleStatus={() => {
+                            equipments.toggleRented(foundEntry.id, element.id)
+                        }}
+                        editAction={() => navigate(`/equipment/${element.groupId}/${element.id}/edit`)}
+                        removeAction={() => {
+                            equipments.removeEquipment(element.groupId, element.id)
+                        }}
+                        rented={element.rented}
+                    />
+                )
+            })}
         </div>
     </div>
 }
