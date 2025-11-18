@@ -1,5 +1,5 @@
 import styles from './Header.module.css'
-import PageThemeToggle from "../PageThemeToggle/PageThemeToggle";
+import PageThemeToggle from "../PageThemeToggle/PageThemeToggle.tsx";
 
 interface HeaderProps {
     title: string
