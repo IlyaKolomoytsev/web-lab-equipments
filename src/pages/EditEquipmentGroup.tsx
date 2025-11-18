@@ -4,6 +4,7 @@ import Button from "../components/Buttons/Button.tsx";
 import {BackIcon, EditIcon} from "../components/Icons/Icons.tsx";
 import {useEquipmentsStore} from "../utils/EquipmentContext.tsx";
 import {useNavigate, useParams} from "react-router-dom";
+import Header from "../components/Header/Header.tsx";
 
 const EditEquipmentGroup: React.FC = () => {
     const equipment = useEquipmentsStore()
@@ -30,24 +31,28 @@ const EditEquipmentGroup: React.FC = () => {
 
 
     return (
-        <form className="edit-form">
-            <InputField
-                label="Edit equipment title"
-                placeholder="Edit equipment title"
-                content={title}
-                setContent={setTitle}
-            ></InputField>
-            <InputField
-                label="Edit description"
-                placeholder="Edit description"
-                content={description}
-                setContent={setDescription}
-            ></InputField>
-            <div>
-                <Button variant="primary" style={{marginRight: "0.2rem"}}>{BackIcon()} Back</Button>
-                <Button variant="primary">{EditIcon()} Edit</Button>
-            </div>
-        </form>)
+        <div>
+            <Header title={"Edit equipment"}></Header>
+            <form className="edit-form">
+                <InputField
+                    label="Edit equipment title"
+                    placeholder="Edit equipment title"
+                    content={title}
+                    setContent={setTitle}
+                ></InputField>
+                <InputField
+                    label="Edit description"
+                    placeholder="Edit description"
+                    content={description}
+                    setContent={setDescription}
+                ></InputField>
+                <div>
+                    <Button variant="primary" style={{marginRight: "0.2rem"}}>{BackIcon()} Back</Button>
+                    <Button variant="primary">{EditIcon()} Edit</Button>
+                </div>
+            </form>
+
+        </div>)
 }
 
 export default EditEquipmentGroup;
