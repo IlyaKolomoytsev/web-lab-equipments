@@ -1,0 +1,25 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model EquipmentGroup {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  equipments  Equipment[]
+}
+
+model Equipment {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  rented      Boolean @default(false)
+  groupId     Int
+  group       EquipmentGroup @relation(fields: [groupId], references: [id])
+}
