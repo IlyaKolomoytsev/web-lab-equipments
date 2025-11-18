@@ -107,6 +107,9 @@ const EquipmentGroupPage: React.FC = () => {
                         equipments.toggleRented(foundEntry.id, element.id)
                     }}
                     editAction={() => navigate(`/equipment/${element.groupId}/${element.id}/edit`)}
+                    removeAction={() => {
+                        equipments.removeEquipment(element.groupId, element.id)
+                    }}
                     rented={element.rented}
                 />
             ))}
