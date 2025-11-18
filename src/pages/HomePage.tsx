@@ -70,8 +70,8 @@ const HomePage: React.FC = () => {
                 e.preventDefault();
             }}>
             <InputField
-                label="Edit equipment title"
-                placeholder="Edit equipment title"
+                label="Add new group"
+                placeholder="Add group title"
                 content={title}
                 setContent={setTitle}
             ></InputField>
@@ -98,6 +98,7 @@ const HomePage: React.FC = () => {
                 <GroupCard
                     title={group.title}
                     description={group.description}
+                    mainAction={() => navigate("/equipment/" + group.id)}
                     editAction={() => navigate(`/equipment-group/${group.id}/edit`)}
                     removeAction={() => {removeGroupId(group.id)}}
                 />
