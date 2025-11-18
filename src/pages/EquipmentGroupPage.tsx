@@ -137,7 +137,9 @@ const EquipmentGroupPage: React.FC = () => {
                         }}
                         editAction={() => navigate(`/equipment/${element.groupId}/${element.id}/edit`)}
                         removeAction={() => {
-                            equipments.removeEquipment(element.groupId, element.id)
+                            if (confirm("Are you sure?")) {
+                                equipments.removeEquipment(element.groupId, element.id)
+                            }
                         }}
                         rented={element.rented}
                     />
