@@ -76,8 +76,8 @@ const HomePage: React.FC = () => {
                 setContent={setTitle}
             ></InputField>
             <InputField
-                label="Edit description"
-                placeholder="Edit description"
+                label="Add description"
+                placeholder="Add description"
                 content={description}
                 setContent={setDescription}
             ></InputField>
