@@ -3,7 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import Header from "../components/Header/Header.tsx";
 import Button from "../components/Buttons/Button.tsx";
-import {AddIcon, HideIcon, HomeIcon, ShowIcon} from "../components/Icons/Icons.tsx";
+import {AddIcon, HideIcon, HomeIcon, RemoveIcon, ShowIcon} from "../components/Icons/Icons.tsx";
 import InputField from "../components/Forms/InputField.tsx";
 import type {EquipmentGroup} from "../types/equipments.ts";
 import ElementCard from "../components/cards/ElementCard.tsx";
@@ -64,6 +64,15 @@ const EquipmentGroupPage: React.FC = () => {
                 navigate("/")
             }}>
                 {HomeIcon()} Home
+            </Button>
+            <Button
+                variant="danger"
+                onClick={() => {
+                    foundEntry?.equipments.map(value => {
+                        equipments.removeEquipment(foundEntry.id, value.id);
+                    })
+                }}>
+                {RemoveIcon()} Remove elements
             </Button>
             <Button variant="secondary" onClick={changeFormVisibility}>
                 {formVisibilityButton(formVisibility)}
