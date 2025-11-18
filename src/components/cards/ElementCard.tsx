@@ -1,23 +1,17 @@
 import styles from "./Card.module.css"
 import Button from "../Buttons/Button.tsx";
-import {useState} from "react";
 import {EditIcon, RemoveIcon, RentedIcon, StockIcon} from "../Icons/Icons.tsx";
 
 interface CardProps {
     title: string;
     description: string;
     rented: boolean;
+    toggleStatus?: () => void;
     editAction?: () => void;
     removeAction?: () => void;
 }
 
-const GroupCard: React.FC<CardProps> = (props) => {
-    const [rented, setRented] = useState(props.rented);
-
-    const changeStatus = () => {
-        setRented(rented => !rented);
-    }
-
+const ElementCard: React.FC<CardProps> = (props) => {
     const statusContent = (rented: boolean) => {
         if (rented) {
             return [RentedIcon(), "Rented"];
@@ -37,12 +31,12 @@ const GroupCard: React.FC<CardProps> = (props) => {
 
     return (
         <div className={styles.card}>
-            <div className={styles.card_header} onClick={changeStatus}>
-                <h3 className={styles.card_title} style={titleColor(rented)}>
+            <div className={styles.card_header} onClick={props.toggleStatus}>
+                <h3 className={styles.card_title} style={titleColor(props.rented)}>
                     {props.title}
                 </h3>
                 <h5 className={styles.card_status}>
-                    Status: {statusContent(rented)}
+                    Status: {statusContent(props.rented)}
                 </h5>
                 <div className={styles.card_description}>
                     {props.description}
@@ -60,4 +54,4 @@ const GroupCard: React.FC<CardProps> = (props) => {
     )
 }
 
-export default GroupCard;
+export default ElementCard;
