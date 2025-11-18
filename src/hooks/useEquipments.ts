@@ -130,6 +130,35 @@ export function useEquipments() {
         );
     };
 
+    const editEquipment = (groupId: number, equipmentId: number, title: string, description: string, rented: boolean) => {
+        setGroups(prevGroups => {
+                return prevGroups.map(group => {
+                    if (group.id !== groupId) {
+                        return group;
+                    }
+
+                    const updatedEquipments = group.equipments.map(eq => {
+                        if (eq.id !== equipmentId) {
+                            return eq;
+                        }
+
+                        return {
+                            ...eq,
+                            title: title,
+                            description: description,
+                            rented: rented,
+                        };
+                    });
+
+                    return {
+                        ...group,
+                        equipments: updatedEquipments,
+                    };
+                });
+            }
+        );
+    }
+
     const clearAll = () => {
         setGroups([]);
     };
@@ -143,6 +172,7 @@ export function useEquipments() {
         toggleRented,
         removeEquipment,
         editGroup,
+        editEquipment,
         clearAll,
     };
 }
