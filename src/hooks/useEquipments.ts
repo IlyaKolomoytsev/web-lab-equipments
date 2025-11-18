@@ -2,18 +2,8 @@ import {useEffect, useState} from "react";
 import {loadEquipments, saveEquipments} from "../storage/equipmentsStorage";
 import type {Equipment, EquipmentGroup} from "../types/equipments.ts";
 
-export interface EquipmentsStore {
-    groups: EquipmentGroup[],
-    setGroups: React.Dispatch<React.SetStateAction<EquipmentGroup[]>>,
-    addGroup: (title: string, description: string) => void,
-    removeGroup: (groupId: number) => void,
-    addEquipment: (groupId: number, title: string, description: string) => void,
-    toggleRented: (groupId: number, equipmentId: number) => void,
-    removeEquipment: (groupId: number, equipmentId: number) => void,
-    clearAll: () => void
-}
 
-export function useEquipments():EquipmentsStore {
+export function useEquipments() {
     const [groups, setGroups] = useState<EquipmentGroup[]>(() => loadEquipments());
 
     // синхронизируем state → localStorage
@@ -125,6 +115,20 @@ export function useEquipments():EquipmentsStore {
         );
     };
 
+    const editGroup = (groupId: number, newTitle: string, newDescription: string) => {
+        setGroups(prevGroups =>
+            prevGroups.map(group => {
+                if (group.id === groupId) {
+                    return {
+                        ...group,
+                        title: newTitle,   // обновляем название
+                        description: newDescription,  // обновляем описание
+                    };
+                }
+                return group;
+            })
+        );
+    };
 
     const clearAll = () => {
         setGroups([]);
@@ -138,6 +142,9 @@ export function useEquipments():EquipmentsStore {
         addEquipment,
         toggleRented,
         removeEquipment,
+        editGroup,
         clearAll,
     };
 }
+
+export type EquipmentsStore = ReturnType<typeof useEquipments>;
