@@ -4,12 +4,18 @@ import type {Equipment, EquipmentGroup} from "../types/equipments.ts";
 
 
 export function useEquipments() {
-    const [groups, setGroups] = useState<EquipmentGroup[]>(() => loadEquipments());
+    const [groups, setGroups] = useState<EquipmentGroup[]|undefined>(undefined);
 
-    // синхронизируем state → localStorage
+    const updateGroups = () => {
+        fetch("/api/groups") // Замените на свой URL
+            .then(response => response.json()) // Парсим ответ как JSON
+            .then(data => setGroups(data)) // Сохраняем полученные данные в стейт
+            .catch(error => console.error("Error fetching data:", error)); // Обработка ошибок
+    }
+
     useEffect(() => {
-        saveEquipments(groups);
-    }, [groups]);
+        updateGroups()
+    }, []);
 
     // генерация id (простой вариант)
     const getNextGroupId = () =>
@@ -17,7 +23,7 @@ export function useEquipments() {
 
     const getNextEquipmentId = (groupId: number) => {
         // ищем нужную группу
-        const group = groups.find(g => g.id === groupId);
+        const group = groups?.find(g => g.id === groupId);
         if (!group) return 1; // если группы нет — начинаем с 1
 
         // ищем максимальный id оборудования в этой группе
@@ -31,17 +37,34 @@ export function useEquipments() {
     // CRUD-операции:
 
     const addGroup = (title: string, description: string) => {
-        const newGroup: EquipmentGroup = {
-            id: getNextGroupId(),
-            title,
-            description,
-            equipments: [],
-        };
-        setGroups((prev) => [...prev, newGroup]);
+        fetch("/api/groups", {
+            method: "POST", // Отправка POST запроса
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({title, description}), // Отправляем данные в теле запроса
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Group created:", data)
+                const newGroup: EquipmentGroup = {
+                    ...data,
+                    equipments: [],
+                };
+                setGroups((prev) => [...prev, newGroup]);
+            })
+            .catch((error) => console.error("Error:", error));
     };
 
-    const removeGroup = (groupId: number) => {
-        setGroups((prev) => prev.filter((g) => g.id !== groupId));
+    const removeGroup = (id: number) => {
+        fetch("/api/groups/" + id, {
+            method: "DELETE", // Отправка POST запроса
+        })
+            .then(() => {
+                console.log("Group deleted:", id)
+                setGroups((prev) => prev?.filter((g) => g.id !== id));
+            })
+            .catch((error) => console.error("Error:", error));
     };
 
     const addEquipment = (
@@ -49,52 +72,64 @@ export function useEquipments() {
         title: string,
         description: string
     ) => {
-        setGroups(prevGroups =>
-            prevGroups.map(group => {
-                if (group.id !== groupId) {
-                    return group;
-                }
-
-                const newEquipment: Equipment = {
-                    id: getNextEquipmentId(groupId),
-                    title,
-                    description,
-                    rented: false,
-                    groupId,
-                };
-
-                return {
-                    ...group,
-                    equipments: [...group.equipments, newEquipment],
-                };
+        fetch(`/api/groups/${groupId}/equipments`, {
+            method: "POST", // Отправка POST запроса
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({title, description}), // Отправляем данные в теле запроса
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Group created:", data)
+                setGroups(prevGroups =>
+                    prevGroups?.map(group => {
+                        if (group.id !== groupId) {
+                            return group;
+                        }
+                        return {
+                            ...group,
+                            equipments: [...group.equipments, data],
+                        };
+                    })
+                );
             })
-        );
+            .catch((error) => console.error("Error:", error));
     };
 
     const removeEquipment = (groupId: number, equipmentId: number) => {
-        setGroups(prevGroups =>
-            prevGroups.map(group => {
-                // Если это не та группа — возвращаем как есть
-                if (group.id !== groupId) {
-                    return group;
-                }
+        fetch(`/api/groups/${groupId}/equipments/${equipmentId}`, {
+            method: "DELETE",
+        })
+            .then(() => {
+                console.log("Equipment deleted:", equipmentId, "from group", groupId);
+                setGroups(prevGroups =>
+                    prevGroups?.map(group => {
+                        // Если это не та группа — возвращаем как есть
+                        if (group.id !== groupId) {
+                            return group;
+                        }
 
-                // Обновляем только нужную
-                const updatedEquipments = group.equipments.filter(
-                    eq => eq.id !== equipmentId
+                        // Обновляем только нужную
+                        const updatedEquipments = group.equipments.filter(
+                            eq => eq.id !== equipmentId
+                        );
+
+                        return {
+                            ...group,
+                            equipments: updatedEquipments,
+                        };
+                    })
                 );
-
-                return {
-                    ...group,
-                    equipments: updatedEquipments,
-                };
             })
-        );
+            .catch((error) => console.error("Error:", error));
+
+
     };
 
     const toggleRented = (groupId: number, equipmentId: number) => {
         setGroups(prevGroups =>
-            prevGroups.map(group => {
+            prevGroups?.map(group => {
                 if (group.id !== groupId) {
                     return group;
                 }
@@ -117,7 +152,7 @@ export function useEquipments() {
 
     const editGroup = (groupId: number, newTitle: string, newDescription: string) => {
         setGroups(prevGroups =>
-            prevGroups.map(group => {
+            prevGroups?.map(group => {
                 if (group.id === groupId) {
                     return {
                         ...group,
@@ -132,7 +167,7 @@ export function useEquipments() {
 
     const editEquipment = (groupId: number, equipmentId: number, title: string, description: string, rented: boolean) => {
         setGroups(prevGroups => {
-                return prevGroups.map(group => {
+                return prevGroups?.map(group => {
                     if (group.id !== groupId) {
                         return group;
                     }

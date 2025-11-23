@@ -14,10 +14,13 @@ const EquipmentGroupPage: React.FC = () => {
     const navigate = useNavigate();
     const {id} = useParams<{ id: string }>();
     let foundEntry: EquipmentGroup | undefined;
-    if (id) {
-        const equipmentId = parseInt(id, 10);
-        foundEntry = equipments.groups.find(group => group.id === equipmentId);
-    }
+    const serachEntry = (id: string | undefined) => {
+        if (id) {
+            const equipmentId = parseInt(id, 10);
+            foundEntry = equipments.groups?.find(group => group.id === equipmentId);
+        }
+    };
+    serachEntry(id);
 
     const [formVisibility, setFormVisibility] = useState(false);
     const [title, setTitle] = useState("");
@@ -26,11 +29,11 @@ const EquipmentGroupPage: React.FC = () => {
     const formRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
-        if (!foundEntry) {
+        if (equipments.groups && !foundEntry) {
             alert(`Equipment group with id: ${id} not found!`);
             navigate("/"); // Перенаправляем на главную, если запись не найдена
         }
-    }, [navigate, foundEntry, id]);
+    }, [equipments.groups]);
 
     useEffect(() => {
         if (!formRef.current) return;
@@ -42,7 +45,7 @@ const EquipmentGroupPage: React.FC = () => {
             height = `${contentHeight}px`
         }
         formRef.current.style.height = height;
-    }, [formVisibility]);
+    }, [formRef.current, formVisibility]);
 
     const formVisibilityButton = (isOpen: boolean) => {
         if (isOpen) {
@@ -69,7 +72,7 @@ const EquipmentGroupPage: React.FC = () => {
                 variant="danger"
                 onClick={() => {
                     foundEntry?.equipments.map(value => {
-                        equipments.removeEquipment(foundEntry.id, value.id);
+                        equipments.removeEquipment(foundEntry!.id, value.id);
                     })
                 }}>
                 {RemoveIcon()} Remove elements
@@ -81,6 +84,7 @@ const EquipmentGroupPage: React.FC = () => {
         <form
             ref={formRef}
             className="create-form"
+            style={{ height: "0px" }}
             onSubmit={(e: React.FormEvent) => {
                 e.preventDefault();
             }}>
@@ -100,7 +104,7 @@ const EquipmentGroupPage: React.FC = () => {
                 variant="primary"
                 onClick={() => {
                     if (title === "") return;
-                    equipments.addEquipment(foundEntry.id, title, description)
+                    equipments.addEquipment(foundEntry!.id, title, description)
                     setTitle("");
                     setDescription("")
                 }}
@@ -142,7 +146,7 @@ const EquipmentGroupPage: React.FC = () => {
                         title={element.title}
                         description={element.description}
                         toggleStatus={() => {
-                            equipments.toggleRented(foundEntry.id, element.id)
+                            equipments.toggleRented(foundEntry!.id, element.id)
                         }}
                         editAction={() => navigate(`/equipment/${element.groupId}/${element.id}/edit`)}
                         removeAction={() => {

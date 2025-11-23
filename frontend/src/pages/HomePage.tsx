@@ -94,7 +94,7 @@ const HomePage: React.FC = () => {
             </Button>
         </form>
         <div className="list">
-            {equipments.groups.map(group => (
+            {equipments.groups?.map(group => (
                 <GroupCard
                     title={group.title}
                     description={group.description}

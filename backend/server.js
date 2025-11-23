@@ -81,7 +81,68 @@ app.delete('/groups/:id', async (req, res) => {
         });
         res.status(204).end();
     } catch (err) {
-        res.status(500).json({ error: 'Failed to delete group' });
+        res.status(500).json({ error: 'Failed to delete group'+err });
+    }
+});
+
+// Эндпоинт для добавления нового оборудования в группу
+app.post('/groups/:groupId/equipments', async (req, res) => {
+    const {groupId} = req.params;
+    const { title, description} = req.body;
+
+    try {
+        // Проверяем, существует ли группа, в которую добавляется оборудование
+        const group = await prisma.equipmentGroup.findUnique({
+            where: { id: Number(groupId) },
+        });
+
+        if (!group) {
+            return res.status(404).json({ error: 'Group not found' });
+        }
+
+        // Создаём новое оборудование
+        const newEquipment = await prisma.equipment.create({
+            data: {
+                title,
+                description,
+                groupId: Number(groupId), // Связь с группой
+            },
+        });
+
+        res.status(201).json(newEquipment);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to add equipment' });
+    }
+});
+
+// Удаление оборудования по id группы и id оборудования
+app.delete('/groups/:groupId/equipments/:equipmentId', async (req, res) => {
+    const { groupId, equipmentId } = req.params;
+
+    const groupIdNum = Number(groupId);
+    const equipmentIdNum = Number(equipmentId);
+
+    if (Number.isNaN(groupIdNum) || Number.isNaN(equipmentIdNum)) {
+        return res.status(400).json({ error: 'Invalid groupId or equipmentId' });
+    }
+
+    try {
+        const result = await prisma.equipment.deleteMany({
+            where: {
+                id: equipmentIdNum,
+                groupId: groupIdNum,
+            },
+        });
+
+        if (result.count === 0) {
+            // либо не существует такой группы, либо в этой группе нет такого equipment
+            return res.status(404).json({ error: 'Equipment not found in this group' });
+        }
+
+        return res.status(204).end(); // успешно удалили, содержимого нет
+    } catch (err) {
+        console.error('Failed to delete equipment:', err);
+        return res.status(500).json({ error: 'Failed to delete equipment' });
     }
 });
 
