@@ -1,5 +1,5 @@
 import {useEquipmentsStore} from "../utils/EquipmentContext.tsx";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import Header from "../components/Header/Header.tsx";
 import Button from "../components/Buttons/Button.tsx";
@@ -7,11 +7,16 @@ import {AddIcon, HideIcon, HomeIcon, RemoveIcon, ShowIcon} from "../components/I
 import InputField from "../components/Forms/InputField.tsx";
 import type {EquipmentGroup} from "../types/equipments.ts";
 import ElementCard from "../components/cards/ElementCard.tsx";
+import Pagination from "../components/pagination/Pagination.tsx";
+
+const ELEMENT_COUNT_ON_PAGE = 3;
 
 const EquipmentGroupPage: React.FC = () => {
     console.log("EquipmentGroupPage");
     const equipments = useEquipmentsStore()
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+
     const {id} = useParams<{ id: string }>();
     let foundEntry: EquipmentGroup | undefined;
     const serachEntry = (id: string | undefined) => {
@@ -60,6 +65,12 @@ const EquipmentGroupPage: React.FC = () => {
     if (!foundEntry) {
         return null;
     }
+
+    const pageString = searchParams.get("page");
+    const page = Number(pageString) > 0 ? Number(pageString) : 1;
+    const groupsCount = foundEntry.equipments.length ? foundEntry.equipments.length : 1;
+    const maxPage = Math.ceil(groupsCount / ELEMENT_COUNT_ON_PAGE)
+
     return <div>
         <Header title={foundEntry.title}></Header>
         <div className="toolbar">
@@ -138,29 +149,37 @@ const EquipmentGroupPage: React.FC = () => {
             </select>
         </div>
         <div className="list">
-            {foundEntry.equipments.map(element => {
-                console.log(filter);
-                if (filter !== undefined && filter !== element.rented) {
-                    return null;
-                }
-                return (
-                    <ElementCard
-                        title={element.title}
-                        description={element.description}
-                        toggleStatus={() => {
-                            equipments.toggleRented(foundEntry!.id, element.id)
-                        }}
-                        editAction={() => navigate(`/equipment/${element.groupId}/${element.id}/edit`)}
-                        removeAction={() => {
-                            if (confirm("Are you sure?")) {
-                                equipments.removeEquipment(element.groupId, element.id)
-                            }
-                        }}
-                        rented={element.rented}
-                    />
+            {foundEntry.equipments
+                .filter((value, index) => {
+                        const first = (page - 1) * ELEMENT_COUNT_ON_PAGE;
+                        const last = first + ELEMENT_COUNT_ON_PAGE;
+                        return first <= index && index < last;
+                    }
                 )
-            })}
+                .map(element => {
+                    console.log(filter);
+                    if (filter !== undefined && filter !== element.rented) {
+                        return null;
+                    }
+                    return (
+                        <ElementCard
+                            title={element.title}
+                            description={element.description}
+                            toggleStatus={() => {
+                                equipments.toggleRented(foundEntry!.id, element.id)
+                            }}
+                            editAction={() => navigate(`/equipment/${element.groupId}/${element.id}/edit`)}
+                            removeAction={() => {
+                                if (confirm("Are you sure?")) {
+                                    equipments.removeEquipment(element.groupId, element.id)
+                                }
+                            }}
+                            rented={element.rented}
+                        />
+                    )
+                })}
         </div>
+        <Pagination currentPage={page} maximum={maxPage} baseUrl={`/equipment/${foundEntry.id}`}/>
     </div>
 }
 

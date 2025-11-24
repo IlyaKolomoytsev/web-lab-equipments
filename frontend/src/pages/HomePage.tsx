@@ -61,7 +61,6 @@ const HomePage: React.FC = () => {
     const page = Number(pageString) > 0 ? Number(pageString) : 1;
     const groupsCount = equipments.groups?.length ? equipments.groups.length : 1;
     const maxPage = Math.ceil(groupsCount / ELEMENT_COUNT_ON_PAGE)
-    debugger;
     return <div>
         <Header title={"Groups of equipments"}></Header>
         <div className="toolbar">
@@ -122,8 +121,7 @@ const HomePage: React.FC = () => {
                     />
                 ))}
         </div>
-        <Pagination currentPage={page} maximum={maxPage} baseUrl={"/"}>
-        </Pagination>
+        <Pagination currentPage={page} maximum={maxPage} baseUrl={"/"}/>
     </div>
 }
 
