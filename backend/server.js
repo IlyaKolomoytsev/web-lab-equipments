@@ -125,14 +125,14 @@ app.put('/groups/:groupId/equipments/:equipmentId', async (req, res) => {
         return res.status(400).json({error: 'Invalid groupId or equipmentId'});
     }
 
-    const {title, description} = req.body;
+    const {title, description, rented} = req.body;
     try {
         const updateEquipments = await prisma.equipment.update({
             where: {
                 id: equipmentIdNum,
                 groupId: groupIdNum,
             },
-            data: {title, description},
+            data: {title, description, rented},
         })
         res.json(updateEquipments);
     } catch (err) {

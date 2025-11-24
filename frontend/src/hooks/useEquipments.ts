@@ -127,26 +127,13 @@ export function useEquipments() {
     };
 
     const toggleRented = (groupId: number, equipmentId: number) => {
-        setGroups(prevGroups =>
-            prevGroups?.map(group => {
-                if (group.id !== groupId) {
-                    return group;
-                }
-
-                const updatedEquipments = group.equipments.map(eq => {
-                    if (eq.id !== equipmentId) {
-                        return eq;
-                    }
-
-                    return {...eq, rented: !eq.rented};
-                });
-
-                return {
-                    ...group,
-                    equipments: updatedEquipments,
-                };
-            })
-        );
+        const group = groups?.find(value => value.id === groupId)
+        const equipment = group?.equipments.find(equipment => equipment.id === equipmentId)
+        if (!equipment) {
+            console.error("Can't find equipment with group id:", groupId, "and equipment id:", equipmentId);
+            return;
+        }
+        editEquipment(groupId, equipmentId, equipment.title, equipment.description, !equipment.rented);
     };
 
     const editGroup = (groupId: number, newTitle: string, newDescription: string) => {
@@ -181,7 +168,7 @@ export function useEquipments() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({title, description}), // Отправляем данные в теле запроса
+            body: JSON.stringify({title, description, rented}), // Отправляем данные в теле запроса
         })
             .then((response) => response.json())
             .then((data) => {
