@@ -71,9 +71,11 @@ const EquipmentGroupPage: React.FC = () => {
             <Button
                 variant="danger"
                 onClick={() => {
-                    foundEntry?.equipments.map(value => {
-                        equipments.removeEquipment(foundEntry!.id, value.id);
-                    })
+                    if (confirm("Are you sure?")) {
+                        foundEntry?.equipments.map(value => {
+                            equipments.removeEquipment(foundEntry!.id, value.id);
+                        })
+                    }
                 }}>
                 {RemoveIcon()} Remove elements
             </Button>
@@ -84,7 +86,7 @@ const EquipmentGroupPage: React.FC = () => {
         <form
             ref={formRef}
             className="create-form"
-            style={{ height: "0px" }}
+            style={{height: "0px"}}
             onSubmit={(e: React.FormEvent) => {
                 e.preventDefault();
             }}>
