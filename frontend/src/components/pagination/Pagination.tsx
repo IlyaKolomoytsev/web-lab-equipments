@@ -6,6 +6,7 @@ interface PaginationProps {
     minimum?: number;
     currentPage: number;
     maximum: number;
+    baseUrl: string;
 }
 
 const ELEMET_COUNT = 5
@@ -20,7 +21,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
     const navigate = useNavigate();
     const minimum = props.minimum ? props.minimum : 1
     const generateLink = (page: number) => {
-        return "/"
+        return props.baseUrl + "?page=" + page;
     }
     const createPaginationElement = (page: number, active?:boolean): PaginationElement => {
         return {
@@ -35,11 +36,9 @@ const Pagination: React.FC<PaginationProps> = (props) => {
         if (props.maximum - props.currentPage < ELEMET_COUNT) {
             first = props.maximum - ELEMET_COUNT < minimum ? minimum : props.maximum - ELEMET_COUNT;
             last = props.maximum;
-            debugger;
         } else {
             first = props.currentPage;
             last = props.currentPage + ELEMET_COUNT - 2;
-            debugger;
         }
 
         const list: PaginationElement[] = []

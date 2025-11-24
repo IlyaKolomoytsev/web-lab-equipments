@@ -185,7 +185,9 @@ export function useEquipments() {
     };
 
     const clearAll = () => {
-        setGroups([]);
+        groups?.map((group) => {
+            removeGroup(group.id);
+        })
     };
 
     return {

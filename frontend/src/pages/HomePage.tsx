@@ -5,11 +5,15 @@ import {AddIcon, HideIcon, RemoveIcon, ShowIcon} from "../components/Icons/Icons
 import GroupCard from "../components/cards/GroupCard.tsx";
 import InputField from "../components/Forms/InputField.tsx";
 import {useEquipmentsStore} from "../utils/EquipmentContext.tsx";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
+import Pagination from "../components/pagination/Pagination.tsx";
+
+const ELEMENT_COUNT_ON_PAGE = 2
 
 const HomePage: React.FC = () => {
     const equipments = useEquipmentsStore();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     const [formVisibility, setFormVisibility] = useState(false);
     const [title, setTitle] = useState("");
@@ -53,6 +57,11 @@ const HomePage: React.FC = () => {
         setFormVisibility(visibility => !visibility);
     }
 
+    const pageString = searchParams.get("page");
+    const page = Number(pageString) > 0 ? Number(pageString) : 1;
+    const groupsCount = equipments.groups?.length ? equipments.groups.length : 1;
+    const maxPage = Math.ceil(groupsCount / ELEMENT_COUNT_ON_PAGE)
+    debugger;
     return <div>
         <Header title={"Groups of equipments"}></Header>
         <div className="toolbar">
@@ -94,16 +103,27 @@ const HomePage: React.FC = () => {
             </Button>
         </form>
         <div className="list">
-            {equipments.groups?.map(group => (
-                <GroupCard
-                    title={group.title}
-                    description={group.description}
-                    mainAction={() => navigate("/equipment/" + group.id)}
-                    editAction={() => navigate(`/equipment-group/${group.id}/edit`)}
-                    removeAction={() => {removeGroupId(group.id)}}
-                />
-            ))}
+            {equipments.groups
+                ?.filter((group, index) => {
+                        const first = (page - 1) * ELEMENT_COUNT_ON_PAGE;
+                        const last = first + ELEMENT_COUNT_ON_PAGE;
+                        return first <= index && index < last;
+                    }
+                )
+                .map(group => (
+                    <GroupCard
+                        title={group.title}
+                        description={group.description}
+                        mainAction={() => navigate("/equipment/" + group.id)}
+                        editAction={() => navigate(`/equipment-group/${group.id}/edit`)}
+                        removeAction={() => {
+                            removeGroupId(group.id)
+                        }}
+                    />
+                ))}
         </div>
+        <Pagination currentPage={page} maximum={maxPage} baseUrl={"/"}>
+        </Pagination>
     </div>
 }
 
