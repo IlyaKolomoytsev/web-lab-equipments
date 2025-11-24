@@ -17,7 +17,7 @@ const EditEquipmentGroupPage: React.FC = () => {
     let foundEntry: EquipmentGroup | undefined;
     if (id) {
         const equipmentId = parseInt(id, 10);
-        foundEntry = equipment.groups.find(group => group.id === equipmentId);
+        foundEntry = equipment.groups?.find(group => group.id === equipmentId);
     }
 
     useEffect(() => {

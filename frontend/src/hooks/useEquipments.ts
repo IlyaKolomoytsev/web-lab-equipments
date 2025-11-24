@@ -1,10 +1,9 @@
 import {useEffect, useState} from "react";
-import {loadEquipments, saveEquipments} from "../storage/equipmentsStorage";
-import type {Equipment, EquipmentGroup} from "../types/equipments.ts";
+import type {EquipmentGroup} from "../types/equipments.ts";
 
 
 export function useEquipments() {
-    const [groups, setGroups] = useState<EquipmentGroup[]|undefined>(undefined);
+    const [groups, setGroups] = useState<EquipmentGroup[] | undefined>(undefined);
 
     const updateGroups = () => {
         fetch("/api/groups") // Замените на свой URL
@@ -151,48 +150,69 @@ export function useEquipments() {
     };
 
     const editGroup = (groupId: number, newTitle: string, newDescription: string) => {
-        setGroups(prevGroups =>
-            prevGroups?.map(group => {
-                if (group.id === groupId) {
-                    return {
-                        ...group,
-                        title: newTitle,   // обновляем название
-                        description: newDescription,  // обновляем описание
-                    };
-                }
-                return group;
+        fetch(`/api/groups/${groupId}`, {
+            method: "PUT", // Отправка PUT запроса
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({title: newTitle, description: newDescription}), // Отправляем данные в теле запроса
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Group updated:", data)
+                setGroups(prevGroups =>
+                    prevGroups?.map(group => {
+                        if (group.id === groupId) {
+                            return {
+                                ...group,
+                                ...data
+                            };
+                        }
+                        return group;
+                    })
+                );
             })
-        );
+            .catch((error) => console.error("Error:", error));
     };
 
     const editEquipment = (groupId: number, equipmentId: number, title: string, description: string, rented: boolean) => {
-        setGroups(prevGroups => {
-                return prevGroups?.map(group => {
-                    if (group.id !== groupId) {
-                        return group;
-                    }
-
-                    const updatedEquipments = group.equipments.map(eq => {
-                        if (eq.id !== equipmentId) {
-                            return eq;
+        fetch(`/api/groups/${groupId}/equipments/${equipmentId}`, {
+            method: "PUT", // Отправка PUT запроса
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({title, description}), // Отправляем данные в теле запроса
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Group updated:", data)
+                setGroups(prevGroups => {
+                    return prevGroups?.map(group => {
+                        if (group.id !== groupId) {
+                            return group;
                         }
 
+                        const updatedEquipments = group.equipments.map(eq => {
+                            if (eq.id !== equipmentId) {
+                                return eq;
+                            }
+
+                            return {
+                                ...eq,
+                                ...data
+                            };
+                        });
+
                         return {
-                            ...eq,
-                            title: title,
-                            description: description,
-                            rented: rented,
+                            ...group,
+                            equipments: updatedEquipments,
                         };
                     });
-
-                    return {
-                        ...group,
-                        equipments: updatedEquipments,
-                    };
                 });
-            }
-        );
-    }
+            })
+            .catch((error) => console.error("Error:", error))
+
+    };
 
     const clearAll = () => {
         setGroups([]);
