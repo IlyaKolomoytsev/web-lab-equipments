@@ -16,23 +16,6 @@ export function useEquipments() {
         updateGroups()
     }, []);
 
-    // генерация id (простой вариант)
-    const getNextGroupId = () =>
-        (groups.reduce((max, g) => Math.max(max, g.id), 0) || 0) + 1;
-
-    const getNextEquipmentId = (groupId: number) => {
-        // ищем нужную группу
-        const group = groups?.find(g => g.id === groupId);
-        if (!group) return 1; // если группы нет — начинаем с 1
-
-        // ищем максимальный id оборудования в этой группе
-        const maxId =
-            group.equipments.reduce((max, e) => Math.max(max, e.id), 0);
-
-        return maxId + 1;
-    };
-
-
     // CRUD-операции:
 
     const addGroup = (title: string, description: string) => {
